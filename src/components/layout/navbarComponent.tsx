@@ -1,9 +1,11 @@
 import { Menu, X } from "lucide-react"
 import { useState } from "react"
 import { Link } from "react-router-dom"
+import { useAuth } from "../../constants/path"
 
 export default function NavbarComponent() {
   const [menuOpen, setMenuOpen] = useState(false)
+  const { isAuthenticated, user, setIsAuthenticated, setUser } = useAuth()
 
   const navLinks = [
     { name: "About", href: "#" },
@@ -13,6 +15,11 @@ export default function NavbarComponent() {
     { name: "Projects", href: "#" },
     { name: "Blog", href: "#" },
   ]
+
+  function handleLogout() {
+    setUser(null)
+    setIsAuthenticated(false)
+  }
 
   return (
     <header className="bg-white dark:bg-gray-900 shadow">
@@ -44,19 +51,35 @@ export default function NavbarComponent() {
 
         {/* Desktop Buttons */}
         <div className="hidden md:flex items-center gap-4">
-          <Link
-            className="block rounded-md bg-teal-600 px-5 py-2.5 text-sm font-medium text-white transition hover:bg-teal-700 dark:hover:bg-teal-500"
-            to="#"
-          >
-            Login
-          </Link>
+          {isAuthenticated ? (
+            <>
+              <span className="text-gray-700 dark:text-gray-200 font-medium">
+                {user?.name}
+              </span>
+              <button
+                onClick={handleLogout}
+                className="rounded-md bg-red-500 px-5 py-2.5 text-sm font-medium text-white transition hover:bg-red-600"
+              >
+                Logout
+              </button>
+            </>
+          ) : (
+            <>
+              <Link
+                className="block rounded-md bg-teal-600 px-5 py-2.5 text-sm font-medium text-white transition hover:bg-teal-700 dark:hover:bg-teal-500"
+                to="/login"
+              >
+                Login
+              </Link>
 
-          <Link
-            className="rounded-md bg-gray-200 px-5 py-2.5 text-sm font-medium text-teal-700 transition hover:text-teal-800 dark:bg-gray-800 dark:text-gray-200 dark:hover:text-white"
-            to="#"
-          >
-            Register
-          </Link>
+              <Link
+                className="rounded-md bg-gray-200 px-5 py-2.5 text-sm font-medium text-teal-700 transition hover:text-teal-800 dark:bg-gray-800 dark:text-gray-200 dark:hover:text-white"
+                to="/register"
+              >
+                Register
+              </Link>
+            </>
+          )}
         </div>
 
         {/* Mobile menu button */}
@@ -65,8 +88,6 @@ export default function NavbarComponent() {
           className="md:hidden block rounded-sm bg-gray-100 p-2.5 text-gray-600 transition hover:text-gray-700 dark:bg-gray-800 dark:text-gray-200 dark:hover:text-white"
         >
           <span className="sr-only">Toggle menu</span>
-
-
           {!menuOpen ? <Menu /> : <X />}
         </button>
       </div>
@@ -88,19 +109,35 @@ export default function NavbarComponent() {
           </ul>
 
           <div className="flex flex-col gap-2 mt-4">
-            <Link
-              className="block rounded-md bg-teal-600 px-5 py-2.5 text-sm font-medium text-white transition hover:bg-teal-700 dark:hover:bg-teal-500"
-              to="#"
-            >
-              Login
-            </Link>
+            {isAuthenticated ? (
+              <>
+                <span className="block py-2 text-gray-700 dark:text-gray-200 font-medium">
+                  {user?.name}
+                </span>
+                <button
+                  onClick={handleLogout}
+                  className="block rounded-md bg-red-500 px-5 py-2.5 text-sm font-medium text-white transition hover:bg-red-600"
+                >
+                  Logout
+                </button>
+              </>
+            ) : (
+              <>
+                <Link
+                  className="block rounded-md bg-teal-600 px-5 py-2.5 text-sm font-medium text-white transition hover:bg-teal-700 dark:hover:bg-teal-500"
+                  to="/login"
+                >
+                  Login
+                </Link>
 
-            <Link
-              className="block rounded-md bg-gray-200 px-5 py-2.5 text-sm font-medium text-teal-700 transition hover:text-teal-800 dark:bg-gray-800 dark:text-gray-200 dark:hover:text-white"
-              to="#"
-            >
-              Register
-            </Link>
+                <Link
+                  className="block rounded-md bg-gray-200 px-5 py-2.5 text-sm font-medium text-teal-700 transition hover:text-teal-800 dark:bg-gray-800 dark:text-gray-200 dark:hover:text-white"
+                  to="/register"
+                >
+                  Register
+                </Link>
+              </>
+            )}
           </div>
         </div>
       )}

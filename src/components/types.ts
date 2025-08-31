@@ -1,6 +1,6 @@
 // src/constants/path.ts
 
-export type BlogListProps = {
+ type BlogListProps = {
   id?: string;
   title: string;
   authour: string; // stores authorId
@@ -12,21 +12,32 @@ export type BlogListProps = {
   link?: string;
 };
 
-export type AuthorProps = {
+ type AuthorProps = {
   id: string;
   name: string;
   bio: string;
   avatar: string;
 };
 
-export type ButtonProps = {
+ type ButtonProps = {
   content: string;
   className?: string;
   link?: string;
 };
 
+type UserProps = {
+  name: string
+  email: string
+  userType: "authour" | "default" | "admin"
+  bio?: string
+  avatar: string
+  password:string
+}
+
 export type componentProps = {
   blogList: BlogListProps;
   buttonProps: ButtonProps;
   authorProps: AuthorProps;
+  userProps:UserProps
+
 };
