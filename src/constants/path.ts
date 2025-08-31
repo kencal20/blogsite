@@ -11,6 +11,8 @@ import BlogDetails from "../Pages/blogDetails";
 import SidebarComponent from "../components/modules/sidebar";
 import { authorList } from "./data/authourList";
 import TagComponent from "../components/ui/tagCompoent";
+import AuthProvider,{useAuth} from "../context/authContext";
+import LoginPage from "../Pages/loginPage";
 
 
 
@@ -27,6 +29,9 @@ export {
     BlogDetails,
     SidebarComponent,
     authorList,
-    TagComponent
+    TagComponent,
+    AuthProvider,
+    useAuth,
+    LoginPage
 
 }
