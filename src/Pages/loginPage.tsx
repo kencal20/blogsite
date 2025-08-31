@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { useAuth } from "../constants/path";
 import type { componentProps } from "../constants/path";
+import { useNavigate, useLocation } from "react-router-dom";
 
 export default function LoginPage() {
   const [status, setStatus] = useState<{ type: "error" | "success" | null; message: string }>({
@@ -19,6 +20,10 @@ export default function LoginPage() {
   };
 
   const { users, setUser, setIsAuthenticated } = useAuth();
+  const navigate = useNavigate();
+  const location = useLocation();
+
+  const from = (location.state as { from?: string })?.from || "/";
 
   function handleLogin(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
@@ -40,8 +45,9 @@ export default function LoginPage() {
 
     setUser(user);
     setIsAuthenticated(true);
-    setForm({ email: "", password: "" })
+    setForm({ email: "", password: "" });
 
+    navigate(from, { replace: true });
   }
 
   return (
