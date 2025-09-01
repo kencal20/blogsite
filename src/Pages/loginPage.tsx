@@ -1,7 +1,8 @@
 import { useState } from "react";
+import { useNavigate, useLocation, Link } from "react-router-dom";
+import { signInWithEmailAndPassword } from "firebase/auth";
+import { FIREBASE_AUTH } from "../constants/firebaseConfig";
 import { useAuth } from "../constants/path";
-import type { componentProps } from "../constants/path";
-import { useNavigate, useLocation } from "react-router-dom";
 
 export default function LoginPage() {
   const [status, setStatus] = useState<{ type: "error" | "success" | null; message: string }>({
@@ -13,19 +14,19 @@ export default function LoginPage() {
     email: "",
     password: ""
   });
+const { user, setUser, setIsAuthenticated } = useAuth();
+
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
     setForm((prev) => ({ ...prev, [name]: value }));
   };
 
-  const { users, setUser, setIsAuthenticated } = useAuth();
   const navigate = useNavigate();
   const location = useLocation();
-
   const from = (location.state as { from?: string })?.from || "/";
 
-  function handleLogin(e: React.FormEvent<HTMLFormElement>) {
+  async function handleLogin(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
     const { email, password } = form;
 
@@ -33,21 +34,20 @@ export default function LoginPage() {
       return setStatus({ type: "error", message: "Fill all fields to login" });
     }
 
-    const user = users.find(
-      (u: componentProps["userProps"]) => u.email === email && u.password === password
-    );
+    try {
+      // Firebase sign in
+      await signInWithEmailAndPassword(FIREBASE_AUTH, email, password);
 
-    if (!user) {
-      setStatus({ type: "error", message: "Wrong credentials" });
+      setStatus({ type: "success", message: "Login successful!" });
+      setForm({ email: "", password: "" });
+      setUser(user)
+      setIsAuthenticated(true)
+      navigate(from, { replace: true });
+      window.location.reload();
+    } catch (err: any) {
+      setStatus({ type: "error", message: err.message });
       setForm((prev) => ({ ...prev, password: "" }));
-      return;
     }
-
-    setUser(user);
-    setIsAuthenticated(true);
-    setForm({ email: "", password: "" });
-
-    navigate(from, { replace: true });
   }
 
   return (
@@ -114,9 +114,9 @@ export default function LoginPage() {
 
           <p className="text-sm text-center text-gray-500">
             Don’t have an account?{" "}
-            <a href="#" className="text-blue-600 hover:underline">
+            <Link to="/register" className="text-blue-600 hover:underline">
               Sign up
-            </a>
+            </Link>
           </p>
         </form>
       </div>
