@@ -11,8 +11,10 @@ import BlogDetails from "../Pages/blogDetails";
 import SidebarComponent from "../components/modules/sidebar";
 import { authorList } from "./data/authourList";
 import TagComponent from "../components/ui/tagCompoent";
-import AuthProvider,{useAuth} from "../context/authContext";
+import AuthProvider, { useAuth } from "../context/authContext";
 import LoginPage from "../Pages/loginPage";
+import Register from "../Pages/register";
+import { FIREBASE_AUTH } from "./firebaseConfig";
 
 
 
@@ -32,6 +34,8 @@ export {
     TagComponent,
     AuthProvider,
     useAuth,
-    LoginPage
+    LoginPage,
+    Register,
+    FIREBASE_AUTH,
 
 }
