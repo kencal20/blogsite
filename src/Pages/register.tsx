@@ -35,7 +35,7 @@ export default function Register() {
         photoURL: formData.avatar || "",
       })
 
-      navigate("/dashboard") // redirect after success
+      navigate("/") // redirect after success
     } catch (err: any) {
       setError(err.message)
     } finally {

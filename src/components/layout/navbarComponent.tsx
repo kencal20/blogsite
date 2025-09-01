@@ -6,7 +6,7 @@ import { TagComponent, useAuth } from "../../constants/path"
 export default function NavbarComponent() {
   const [menuOpen, setMenuOpen] = useState(false)
   const [dropdownOpen, setDropdownOpen] = useState(false)
-  const { isAuthenticated, user, setIsAuthenticated, setUser } = useAuth()
+  const { isAuthenticated, user, logout } = useAuth()
 
   const navLinks = [
     { name: "About", href: "#" },
@@ -17,11 +17,6 @@ export default function NavbarComponent() {
     { name: "Blog", href: "#" },
   ]
 
-  function handleLogout() {
-    setUser(null)
-    setIsAuthenticated(false)
-    setDropdownOpen(false)
-  }
 
   return (
     <header className="bg-white dark:bg-gray-900 shadow">
@@ -92,7 +87,7 @@ export default function NavbarComponent() {
                     </li>
                     <li>
                       <button
-                        onClick={handleLogout}
+                        onClick={logout}
                         className="w-full text-left block px-4 py-2 text-red-600 hover:bg-gray-100 dark:hover:bg-gray-700 dark:text-red-400"
                       >
                         Logout
@@ -174,7 +169,7 @@ export default function NavbarComponent() {
                   Dashboard
                 </Link>
                 <button
-                  onClick={handleLogout}
+                  onClick={logout}
                   className="block rounded-md bg-red-500 px-5 py-2.5 text-sm font-medium text-white transition hover:bg-red-600"
                 >
                   Logout

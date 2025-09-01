@@ -31,7 +31,7 @@ type UserProps = {
   userType: "authour" | "default" | "admin"
   bio?: string
   avatar: string
-  password:string
+  password?:string
 }
 
 export type componentProps = {
