@@ -15,6 +15,7 @@ import AuthProvider, { useAuth } from "../context/authContext";
 import LoginPage from "../Pages/loginPage";
 import Register from "../Pages/register";
 import { FIREBASE_AUTH } from "./firebaseConfig";
+import NotFoundPage from "../Pages/notFoundPage";
 
 
 
@@ -37,5 +38,6 @@ export {
     LoginPage,
     Register,
     FIREBASE_AUTH,
+    NotFoundPage
 
 }
