@@ -7,7 +7,7 @@ export default function RouterComponent() {
         <BrowserRouter>
             <NavbarComponent />
             <Routes>
-                <Route path="/" element={isAuthenticated ? <HomePage /> : <LoginPage />} />
+                <Route path="/" element={<HomePage /> } />
                 <Route path="/blog/details/:id" element={<BlogDetails />} />
                 <Route
                     path="/login"
