@@ -54,10 +54,10 @@ export default function NavbarComponent() {
                 className="flex items-center gap-2 rounded-full border border-gray-300 dark:border-gray-700 p-1 pr-3 hover:bg-gray-100 dark:hover:bg-gray-800"
               >
                 <div className="w-8 h-8 flex items-center justify-center rounded-full bg-teal-600 text-white font-semibold">
-                  {user?.name?.charAt(0).toUpperCase() || "U"}
+                  {user?.email?.charAt(0).toUpperCase() || "U"}
                 </div>
                 <span className="text-gray-700 dark:text-gray-200 font-medium">
-                  {user?.name}
+                  {user?.email}
                 </span>
               </button>
 
