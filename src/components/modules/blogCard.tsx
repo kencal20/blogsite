@@ -1,29 +1,29 @@
-import { BookOpen, Calendar, User } from "lucide-react"
-import { CardComponent, type componentProps, authorList, TagComponent } from "../../constants/path"
-import { Link } from "react-router-dom"
+import { BookOpen, Calendar, User } from "lucide-react";
+import { CardComponent, type componentProps, authorList, TagComponent } from "../../constants/path";
+import { Link } from "react-router-dom";
 
 type Props = {
-  blogList: componentProps["blogList"][]
-}
+  blogList: componentProps["blogList"][];
+};
 
 export default function BlogCard({ blogList }: Props) {
   return (
     <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3 w-full">
       {blogList.map((blog) => {
-        const author = authorList.find((a) => a.id === blog.authour) // 🔑 resolve by ID
+        const author = authorList.find((a) => a.id === blog.authour); 
 
         return (
           <CardComponent
             key={blog.id}
             className="col-span-2 hover:shadow-lg transition p-6 flex flex-col w-[100%]"
           >
-            <Link to={`blog/details/${blog.id}`} className="block flex-grow">
+            <Link to={`/blog/details/${blog.id}`} className="block flex-grow">
               {/* Top Section */}
               <div className="sm:flex sm:justify-between sm:gap-4 lg:gap-6">
                 <div className="sm:order-last sm:shrink-0">
                   <img
-                    alt={author?.name}
-                    src={author?.avatar}
+                    alt={author?.name ?? "Unknown Author"}
+                    src={author?.avatar ?? "/placeholder-avatar.png"}
                     className="size-16 rounded-full object-cover sm:size-[72px]"
                   />
                 </div>
@@ -32,7 +32,7 @@ export default function BlogCard({ blogList }: Props) {
                   <h3 className="text-2xl font-bold text-gray-900">{blog.title}</h3>
                   <section className="mt-1 text-sm text-gray-700">
                     <span className="inline-flex items-center gap-1">
-                      <User /> {author?.name}
+                      <User /> {author?.name ?? "Unknown Author"}
                     </span>
                   </section>
                   <p className="mt-4 line-clamp-2 text-sm text-gray-700">
@@ -61,15 +61,15 @@ export default function BlogCard({ blogList }: Props) {
 
             {/* Stick this at bottom-right */}
             <div className="mt-auto flex justify-end">
-              <Link to={`blog/details/${blog.id}`}>
+              <Link to={`/blog/details/${blog.id}`}>
                 <span className="text-sm text-gray-700 hover:underline hover:font-bold">
                   Learn more {"›"}
                 </span>
               </Link>
             </div>
           </CardComponent>
-        )
+        );
       })}
     </div>
-  )
+  );
 }

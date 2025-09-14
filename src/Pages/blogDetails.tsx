@@ -1,24 +1,25 @@
-import { useParams, Link } from "react-router-dom"
-import { blogList, SidebarComponent, CardComponent, authorList } from "../constants/path"
-import { Calendar, BookOpen, User, ArrowLeft, Heart, MessageCircle, Share2 } from "lucide-react"
+import { useParams, Link } from "react-router-dom";
+import { blogList, SidebarComponent, CardComponent, authorList } from "../constants/path";
+import { Calendar, BookOpen, User, ArrowLeft, Heart, MessageCircle, Share2 } from "lucide-react";
 
-type Blog = typeof blogList[number]
+type Blog = typeof blogList[number];
 
 export default function BlogDetails() {
-  const { id } = useParams<{ id: string }>()
-  const blog: Blog | undefined = blogList.find((b) => String(b.id) === id)
+  const { id } = useParams<{ id: string }>();
+  const blog: Blog | undefined = blogList.find((b) => String(b.id) === id);
+
   if (!blog) {
     return (
-      <div className="flex flex-col items-center justify-center h-96">
+      <div className="flex flex-col items-center justify-center min-h-screen">
         <h1 className="text-2xl font-bold text-red-500">Blog not found</h1>
         <Link to="/" className="mt-4 text-blue-600 hover:underline">
           ← Back to Home
         </Link>
       </div>
-    )
+    );
   }
 
-  const author = authorList.find((a) => a.id === blog.authour)
+  const author = authorList.find((a) => a.id === blog.authour); 
 
   return (
     <div className="flex flex-col lg:flex-row gap-10 mt-6 px-4 sm:px-6 lg:px-10">
@@ -49,12 +50,12 @@ export default function BlogDetails() {
         {/* Author Row */}
         <div className="flex items-center gap-4 text-sm text-gray-600">
           <img
-            src={author?.avatar}
-            alt={author?.name}
+            src={author?.avatar ?? "/placeholder-avatar.png"}
+            alt={author?.name ?? "Unknown Author"}
             className="w-10 h-10 rounded-full object-cover"
           />
           <span className="flex items-center gap-1">
-            <User className="w-4 h-4" /> {author?.name}
+            <User className="w-4 h-4" /> {author?.name ?? "Unknown Author"}
           </span>
           <span className="flex items-center gap-1">
             <BookOpen className="w-4 h-4" /> {blog.read_time}
@@ -96,5 +97,5 @@ export default function BlogDetails() {
       {/* Sidebar */}
       <SidebarComponent />
     </div>
-  )
+  );
 }
