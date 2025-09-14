@@ -35,19 +35,21 @@ export default function AuthProvider({ children }: { children: React.ReactNode }
                     setUser(null);
                     setIsAuthenticated(false);
                 }
-                
-            } catch (error) {
-                
-            }
-      finally {
+            } finally {
                 setLoading(false);
-              
-
             }
         });
 
         return () => unsubscribe();
     }, []);
+
+    if (loading) {
+        return (
+            <div className="flex items-center justify-center min-h-screen">
+                <div className="animate-spin rounded-full h-16 w-16 border-b-2 border-gray-900"></div>
+            </div>
+        );
+    }
 
     const logout = async () => {
         await FIREBASE_AUTH.signOut();
@@ -66,7 +68,7 @@ export default function AuthProvider({ children }: { children: React.ReactNode }
                 setIsAuthenticated,
             }}
         >
-            {!loading && children}
+            {children}
         </AuthContext.Provider>
     );
 }
