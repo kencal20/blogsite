@@ -1,4 +1,4 @@
-import { AuthProvider, RouterComponent } from "./constants/path"
+import { AuthProvider, BlogProvider, RouterComponent } from "./constants/path"
 type Props = {}
 
 
@@ -7,7 +7,9 @@ export default function App({ }: Props) {
   return (
     <div>
       <AuthProvider>
-        <RouterComponent />
+        <BlogProvider>
+          <RouterComponent />
+        </BlogProvider>
       </AuthProvider>
 
     </div>
