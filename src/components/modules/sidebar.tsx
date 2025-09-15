@@ -1,9 +1,11 @@
-import { Link } from "react-router-dom"
-import { blogList, CardComponent, TagComponent } from "../../constants/path"
+import { Link } from "react-router-dom";
+import { CardComponent, TagComponent, useBlog } from "../../constants/path";
 
-type Props = {}
+export default function SidebarComponent() {
+  const { blogs, loading } = useBlog();
 
-export default function SidebarComponent({ }: Props) {
+
+
   return (
     <div className="flex flex-col gap-6 w-full lg:w-1/4">
       {/* About This Blog */}
@@ -19,36 +21,42 @@ export default function SidebarComponent({ }: Props) {
       <CardComponent className="bg-gray-100 w-full flex flex-col gap-4 p-4">
         <h1 className="text-xl font-bold mb-2">Recent Posts</h1>
         <div className="flex flex-col gap-3 overflow-y-auto max-h-64">
-          {blogList.map((post) => (
-            <div
-              key={post.id}
-              className="flex gap-3 items-start border-b border-gray-200 pb-2"
-            >
-              <div className="flex flex-col gap-1 w-full">
-                {/* Post Title Link */}
-                <Link
-                  className="text-sm font-semibold text-gray-900 line-clamp-1 hover:text-green-600"
-                  to={`/blog/details/${post.id}`}
-                >
-                  {post.title}
-                </Link>
+          {loading && <p className="text-gray-500 text-sm">Loading posts...</p>}
+          {!loading &&
+            blogs.slice(0, 5).map((post) => (
+              <div
+                key={post.id}
+                className="flex gap-3 items-start border-b border-gray-200 pb-2"
+              >
+                <div className="flex flex-col gap-1 w-full">
+                  {/* Post Title Link */}
+                  <Link
+                    className="text-sm font-semibold text-gray-900 line-clamp-1 hover:text-green-600"
+                    to={`/blog/details/${post.id}`}
+                  >
+                    {post.title}
+                  </Link>
 
-                {/* Author + Meta */}
-                <p className="text-xs text-gray-500">
-                  {post.authour} • {post.date_published} • {post.read_time}
-                </p>
+                  {/* Author + Meta */}
+                  <p className="text-xs text-gray-500">
+                    {post.authorName ?? post.authorEmail ?? "Unknown Author"} •{" "}
+                    {post.date_published
+                      ? new Date(post.date_published).toLocaleDateString()
+                      : "Unknown Date"} • {post.read_time}
+                  </p>
 
-                {/* Tags */}
-                <div className="flex flex-wrap gap-1">
-                  {post.tags?.slice(0, 3).map((tag, index) => (
-                    <TagComponent key={index} tag={tag} />
-                  ))}
+
+                  {/* Tags */}
+                  <div className="flex flex-wrap gap-1">
+                    {post.tags?.slice(0, 3).map((tag, index) => (
+                      <TagComponent key={index} tag={tag} />
+                    ))}
+                  </div>
                 </div>
               </div>
-            </div>
-          ))}
+            ))}
         </div>
       </CardComponent>
     </div>
-  )
+  );
 }
