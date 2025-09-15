@@ -1,11 +1,31 @@
 import { useParams, Link } from "react-router-dom";
-import { SidebarComponent, CardComponent, getInitials } from "../constants/path";
+import {
+  SidebarComponent,
+  CardComponent,
+  getInitials,
+  useAuth,
+  ButtonComponent,
+  BlogForm,
+  type componentProps,
+} from "../constants/path";
 import { Calendar, BookOpen, User, ArrowLeft, Heart, MessageCircle, Share2 } from "lucide-react";
 import { useBlog } from "../constants/path";
+import { useState } from "react";
 
 export default function BlogDetails() {
   const { id } = useParams<{ id: string }>();
-  const { blogs, loading } = useBlog();
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const { blogs, loading, updateBlog } = useBlog();
+  const { user } = useAuth();
+
+  const blog = blogs.find((b) => String(b.id) === id);
+
+  const handleUpdateBlog = (updatedBlog: Partial<componentProps["blogAuthorProps"]>) => {
+    if (blog && blog.id) {
+      updateBlog(blog.id, updatedBlog);
+    }
+    setIsModalOpen(false);
+  };
 
   if (loading) {
     return (
@@ -14,8 +34,6 @@ export default function BlogDetails() {
       </div>
     );
   }
-
-  const blog = blogs.find((b) => String(b.id) === id);
 
   if (!blog) {
     return (
@@ -27,6 +45,8 @@ export default function BlogDetails() {
       </div>
     );
   }
+
+  const isAuthor = blog.authorEmail === user?.email;
 
   return (
     <div className="flex flex-col lg:flex-row gap-10 mt-6 px-4 sm:px-6 lg:px-10">
@@ -49,7 +69,6 @@ export default function BlogDetails() {
             {blog.date_published
               ? new Date(blog.date_published).toLocaleDateString()
               : "Unknown Date"}
-
           </span>
         </div>
 
@@ -58,26 +77,28 @@ export default function BlogDetails() {
 
         {/* Author Row */}
         <div className="flex items-center gap-4 text-sm text-gray-600">
-          {blog.authorAvatar ?
+          {blog.authorAvatar ? (
             <img
-              src={blog.authorAvatar ?? "/placeholder-avatar.png"}
+              src={blog.authorAvatar}
               alt={blog.authorName ?? "Unknown Author"}
               className="w-10 h-10 rounded-full object-cover"
-            /> :
-            (
-              <div className="w-20 h-20 flex items-center justify-center rounded-full bg-gray-300 text-gray-700 text-2xl font-bold">
-                {getInitials(blog.authorName)}
-              </div>
-            )
-          }
+            />
+          ) : (
+            <div className="w-20 h-20 flex items-center justify-center rounded-full bg-gray-300 text-gray-700 text-2xl font-bold">
+              {getInitials(blog.authorName)}
+            </div>
+          )}
           <span className="flex items-center gap-1">
-            <User className="w-4 h-4" />{" "}
-            {blog.authorName ?? blog.authorEmail ?? "Unknown Author"}
+            <User className="w-4 h-4" /> {blog.authorName ?? blog.authorEmail ?? "Unknown Author"}
           </span>
           <span className="flex items-center gap-1">
             <BookOpen className="w-4 h-4" /> {blog.read_time}
           </span>
         </div>
+
+        {isAuthor && (
+          <ButtonComponent content="Edit Blog" onClick={() => setIsModalOpen(true)} />
+        )}
 
         {/* Cover Image */}
         <img
@@ -103,7 +124,6 @@ export default function BlogDetails() {
         <CardComponent className="p-6">
           <p className="text-base text-gray-700 leading-relaxed">{blog.description}</p>
           <p className="mt-4 text-base text-gray-700 leading-relaxed">
-            {/* Placeholder for full content */}
             Lorem ipsum dolor sit amet, consectetur adipiscing elit...
           </p>
         </CardComponent>
@@ -111,6 +131,23 @@ export default function BlogDetails() {
 
       {/* Sidebar */}
       <SidebarComponent />
+
+      {/* Blog Form Modal */}
+      <BlogForm
+        isOpen={isModalOpen}
+        onRequestClose={() => setIsModalOpen(false)}
+        onSubmit={handleUpdateBlog}
+        initialData={{
+          title: blog.title ?? "",
+          description: blog.description ?? "",
+          date_published: blog.date_published ?? new Date().toISOString(),
+          read_time: blog.read_time ?? "",
+          tags: blog.tags ?? [],
+          image: blog.image ?? undefined,
+        }}
+        isEdit={true}
+        blogId={blog.id}
+      />
     </div>
   );
 }

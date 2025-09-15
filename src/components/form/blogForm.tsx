@@ -8,7 +8,8 @@ type BlogFormData = {
   date_published: string;
   read_time: string;
   tags: string[];
-  image?: string; // ✅ changed to string | undefined (no File, no null)
+  image?: string;
+  author?: string;
 };
 
 type Props = {
@@ -36,15 +37,14 @@ export default function BlogForm({
     tags: [],
     image: undefined,
   });
-
   const [tagInput, setTagInput] = useState("");
   const [imageType, setImageType] = useState<"file" | "url">("file");
-  const [fileImage, setFileImage] = useState<File | null>(null); // ✅ store actual file separately
+  const [fileImage, setFileImage] = useState<File | null>(null);
   const { isAuthenticated, user } = useAuth();
   const navigate = useNavigate();
 
   useEffect(() => {
-    if (initialData) {
+    if (initialData && isOpen) {
       setFormData({
         title: initialData.title ?? "",
         description: initialData.description ?? "",
@@ -52,15 +52,27 @@ export default function BlogForm({
         read_time: initialData.read_time ?? "",
         tags: initialData.tags ?? [],
         image: initialData.image ?? undefined,
+        author: initialData.author ?? undefined,
       });
 
       if (initialData.image) setImageType("url");
+      else setImageType("file");
+      setFileImage(null);
+    } else if (!isEdit && !isOpen) {
+      setFormData({
+        title: "",
+        description: "",
+        date_published: "",
+        read_time: "",
+        tags: [],
+        image: undefined,
+      });
+      setFileImage(null);
+      setImageType("file");
     }
-  }, [initialData]);
+  }, [initialData, isOpen]);
 
-  const handleChange = (
-    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
-  ) => {
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target;
     setFormData({ ...formData, [name]: value });
   };
@@ -83,10 +95,7 @@ export default function BlogForm({
   };
 
   const handleRemoveTag = (tagToRemove: string) => {
-    setFormData({
-      ...formData,
-      tags: formData.tags.filter((tag) => tag !== tagToRemove),
-    });
+    setFormData({ ...formData, tags: formData.tags.filter((tag) => tag !== tagToRemove) });
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -97,35 +106,17 @@ export default function BlogForm({
       return;
     }
 
-    let imageUrl: string | undefined = formData.image;
-
-    // If user selected a file, convert to temporary object URL (or upload later)
-    if (fileImage) {
-      imageUrl = URL.createObjectURL(fileImage);
-    }
+    let imageUrl: string | undefined = fileImage ? URL.createObjectURL(fileImage) : formData.image;
 
     const blogToSave: BlogFormData = {
       ...formData,
       image: imageUrl,
-      author: user.email, // ✅ include author here
+      author: user.email,
       date_published: formData.date_published || new Date().toISOString(),
-    } as BlogFormData;
+    };
 
     onSubmit(blogToSave, blogId);
     onRequestClose();
-
-    if (!isEdit) {
-      setFormData({
-        title: "",
-        description: "",
-        date_published: "",
-        read_time: "",
-        tags: [],
-        image: undefined,
-      });
-      setFileImage(null);
-      setImageType("file");
-    }
   };
 
   return (
@@ -135,148 +126,59 @@ export default function BlogForm({
           {isEdit ? "✏️ Edit Blog" : "✍️ Create New Blog"}
         </h2>
 
-        <form
-          onSubmit={handleSubmit}
-          id="blog-form"
-          className="flex flex-col gap-5 flex-1 overflow-y-auto pr-2"
-        >
-          <input
-            type="text"
-            name="title"
-            placeholder="Enter blog title"
-            value={formData.title}
-            onChange={handleChange}
-            className="border border-gray-300 focus:border-blue-500 focus:ring-2 focus:ring-blue-400 p-3 rounded-lg outline-none transition"
-            required
-          />
+        <form onSubmit={handleSubmit} id="blog-form" className="flex flex-col gap-5 flex-1 overflow-y-auto pr-2">
+          <input type="text" name="title" placeholder="Enter blog title" value={formData.title} onChange={handleChange} className="border border-gray-300 focus:border-blue-500 focus:ring-2 focus:ring-blue-400 p-3 rounded-lg outline-none transition" required />
+          <textarea name="description" placeholder="Write your blog description..." value={formData.description} onChange={handleChange} className="border border-gray-300 focus:border-blue-500 focus:ring-2 focus:ring-blue-400 p-3 rounded-lg outline-none transition resize-y w-full min-h-[80px]" />
+          <input type="text" name="read_time" placeholder="Estimated read time (e.g. 5 min)" value={formData.read_time} onChange={handleChange} className="border border-gray-300 focus:border-blue-500 focus:ring-2 focus:ring-blue-400 p-3 rounded-lg outline-none transition" />
 
-          <textarea
-            name="description"
-            placeholder="Write your blog description..."
-            value={formData.description}
-            onChange={handleChange}
-            className="border border-gray-300 focus:border-blue-500 focus:ring-2 focus:ring-blue-400 p-3 rounded-lg outline-none transition resize-y w-full min-h-[80px]"
-          />
-
-          <input
-            type="text"
-            name="read_time"
-            placeholder="Estimated read time (e.g. 5 min)"
-            value={formData.read_time}
-            onChange={handleChange}
-            className="border border-gray-300 focus:border-blue-500 focus:ring-2 focus:ring-blue-400 p-3 rounded-lg outline-none transition"
-          />
-
+          {/* Tags */}
           <div>
             <div className="flex gap-2">
-              <input
-                type="text"
-                placeholder="Enter a tag"
-                value={tagInput}
-                onChange={(e) => setTagInput(e.target.value)}
-                className="border border-gray-300 p-3 rounded-lg flex-1"
-              />
-              <button
-                type="button"
-                onClick={handleAddTag}
-                className="px-4 py-2 bg-green-500 text-white rounded-lg hover:bg-green-600 transition"
-              >
-                Add
-              </button>
+              <input type="text" placeholder="Enter a tag" value={tagInput} onChange={(e) => setTagInput(e.target.value)} className="border border-gray-300 p-3 rounded-lg flex-1" />
+              <button type="button" onClick={handleAddTag} className="px-4 py-2 bg-green-500 text-white rounded-lg hover:bg-green-600 transition">Add</button>
             </div>
             <div className="flex flex-wrap gap-2 mt-2">
               {formData.tags.map((tag, idx) => (
-                <span
-                  key={idx}
-                  className="bg-blue-100 text-blue-700 px-3 py-1 rounded-full flex items-center gap-2"
-                >
+                <span key={idx} className="bg-blue-100 text-blue-700 px-3 py-1 rounded-full flex items-center gap-2">
                   {tag}
-                  <button
-                    type="button"
-                    onClick={() => handleRemoveTag(tag)}
-                    className="text-red-500 hover:text-red-700 font-bold"
-                  >
-                    ×
-                  </button>
+                  <button type="button" onClick={() => handleRemoveTag(tag)} className="text-red-500 hover:text-red-700 font-bold">×</button>
                 </span>
               ))}
             </div>
           </div>
 
+          {/* Image */}
           <div>
             <p className="font-semibold mb-2">Choose Image Type:</p>
             <div className="flex gap-4 mb-3">
               <label className="flex items-center gap-2">
-                <input
-                  type="radio"
-                  name="imageType"
-                  value="file"
-                  checked={imageType === "file"}
-                  onChange={() => setImageType("file")}
-                />
+                <input type="radio" name="imageType" value="file" checked={imageType === "file"} onChange={() => setImageType("file")} />
                 Upload File
               </label>
               <label className="flex items-center gap-2">
-                <input
-                  type="radio"
-                  name="imageType"
-                  value="url"
-                  checked={imageType === "url"}
-                  onChange={() => setImageType("url")}
-                />
+                <input type="radio" name="imageType" value="url" checked={imageType === "url"} onChange={() => setImageType("url")} />
                 Use URL
               </label>
             </div>
 
             {imageType === "file" ? (
-              <input
-                type="file"
-                accept="image/*"
-                onChange={handleFileChange}
-                className="block w-full text-sm text-gray-500 file:mr-3 file:py-2 file:px-4
-                           file:rounded-lg file:border-0
-                           file:text-sm file:font-semibold
-                           file:bg-blue-100 file:text-blue-700
-                           hover:file:bg-blue-200"
-              />
+              <input type="file" accept="image/*" onChange={handleFileChange} className="block w-full text-sm text-gray-500 file:mr-3 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-sm file:font-semibold file:bg-blue-100 file:text-blue-700 hover:file:bg-blue-200" />
             ) : (
-              <input
-                type="text"
-                placeholder="Enter image URL"
-                value={formData.image ?? ""}
-                onChange={handleUrlChange}
-                className="border border-gray-300 p-3 rounded-lg w-full"
-              />
+              <input type="text" placeholder="Enter image URL" value={formData.image ?? ""} onChange={handleUrlChange} className="border border-gray-300 p-3 rounded-lg w-full" />
             )}
 
             {(formData.image || fileImage) &&
               (imageType === "url" ? (
-                <img
-                  src={formData.image}
-                  alt="Blog"
-                  className="mt-3 w-32 h-32 object-cover rounded-lg border"
-                />
+                <img src={formData.image} alt="Blog" className="mt-3 w-32 h-32 object-cover rounded-lg border" />
               ) : (
-                <p className="mt-2 text-gray-500 text-sm">
-                  {fileImage?.name ?? ""}
-                </p>
+                <p className="mt-2 text-gray-500 text-sm">{fileImage?.name ?? ""}</p>
               ))}
           </div>
         </form>
 
         <div className="flex justify-end gap-3 mt-4 shrink-0">
-          <button
-            type="button"
-            onClick={onRequestClose}
-            className="px-5 py-2 rounded-lg bg-gray-200 text-gray-700 hover:bg-gray-300 transition"
-          >
-            Cancel
-          </button>
-          <button
-            type="submit"
-            form="blog-form"
-            className="px-5 py-2 rounded-lg bg-gradient-to-r from-blue-500 to-green-500 text-white font-semibold hover:opacity-90 transition"
-          >
+          <button type="button" onClick={onRequestClose} className="px-5 py-2 rounded-lg bg-gray-200 text-gray-700 hover:bg-gray-300 transition">Cancel</button>
+          <button type="submit" form="blog-form" className="px-5 py-2 rounded-lg bg-gradient-to-r from-blue-500 to-green-500 text-white font-semibold hover:opacity-90 transition">
             {isEdit ? "Update Blog" : "Publish Blog"}
           </button>
         </div>
