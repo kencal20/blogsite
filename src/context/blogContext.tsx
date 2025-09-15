@@ -3,12 +3,8 @@ import { collection, addDoc, updateDoc, deleteDoc, doc, onSnapshot, orderBy, que
 import { db, FIREBASE_AUTH } from "../constants/firebaseConfig";
 import type { componentProps } from "../components/types";
 
-  type Blog = componentProps['blogList'] & {
-  authorName?: string;
-  authorEmail?: string;
-  authorAvatar?: string;
-  authorUid?: string;
-};
+type Blog = componentProps['blogAuthorProps']
+
 type BlogContextType = {
   blogs: Blog[];
   loading: boolean;
@@ -39,16 +35,16 @@ export const BlogProvider = ({ children }: { children: React.ReactNode }) => {
   }, []);
 
   // --- CRUD Operations ---
-const createBlog = async (blogData:any) => {
-  const user = FIREBASE_AUTH.currentUser;
-  await addDoc(collection(db, "blogs"), {
-    ...blogData,
-    authorEmail: user?.email ?? blogData.authorEmail ?? "",
-    authorUid: user?.uid ?? blogData.authorUid ?? null,
-    authorName: user?.displayName ?? blogData.authorName ?? null,
-    createdAt: serverTimestamp(),
-  });
-};
+  const createBlog = async (blogData: any) => {
+    const user = FIREBASE_AUTH.currentUser;
+    await addDoc(collection(db, "blogs"), {
+      ...blogData,
+      authorEmail: user?.email ?? blogData.authorEmail ?? "",
+      authorUid: user?.uid ?? blogData.authorUid ?? null,
+      authorName: user?.displayName ?? blogData.authorName ?? null,
+      createdAt: serverTimestamp(),
+    });
+  };
 
   const updateBlog = async (id: string, blog: Partial<Blog>) => {
     await updateDoc(doc(db, "blogs", id), blog);

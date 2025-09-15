@@ -12,6 +12,12 @@
   link?: string;
 };
 
+ type BlogAuthorProps = BlogListProps & {
+  authorName?: string;
+  authorEmail?: string;
+  authorAvatar?: string;
+  authorUid?: string;
+};
  type AuthorProps = {
   id: string;
   name: string;
@@ -37,6 +43,7 @@ type UserProps = {
 }
 
 export type componentProps = {
+  blogAuthorProps:BlogAuthorProps
   blogList: BlogListProps;
   buttonProps: ButtonProps;
   authorProps: AuthorProps;
