@@ -23,6 +23,8 @@
   content: string;
   className?: string;
   link?: string;
+  onClick?:()=>void
+  disabled?:boolean
 };
 
 type UserProps = {
