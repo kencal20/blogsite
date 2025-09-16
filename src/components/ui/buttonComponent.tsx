@@ -1,18 +1,41 @@
-import { Link } from "react-router-dom";
 import type { componentProps } from "../../constants/path";
 
-type Props = componentProps['buttonProps']
+type ButtonProps = componentProps['buttonProps'];
 
-export default function ButtonComponent({ content, link, className,onClick,disabled=false }: Props) {
+export default function ButtonComponent({
+  content,
+  onClick,
+  type = "button",
+  className = "",
+  disabled = false,
+  variant = "primary",
+  iconLeft,
+  iconRight,
+}: ButtonProps) {
+  const baseStyles = `
+    inline-flex items-center justify-center gap-2
+    px-5 py-2.5 rounded-xl font-medium shadow-sm
+    transition-all duration-200 ease-in-out
+    focus:outline-none focus:ring-2 focus:ring-offset-2
+    disabled:opacity-50 disabled:cursor-not-allowed
+  `;
 
-  return link ? (
-    <Link className={`inline-block rounded-sm border px-12 py-3 text-sm font-medium focus:ring-3 focus:outline-hidden ${className ?? "border-indigo-600 bg-indigo-600 text-white hover:bg-transparent hover:text-indigo-600"}`} to={link}>
+  const variants = {
+    primary: "bg-blue-600 text-white hover:bg-blue-700 focus:ring-blue-300",
+    secondary: "bg-gray-200 text-gray-800 hover:bg-gray-300 focus:ring-gray-400",
+    danger: "bg-red-500 text-white hover:bg-red-600 focus:ring-red-300",
+  };
+
+  return (
+    <button
+      type={type}
+      onClick={onClick}
+      disabled={disabled}
+      className={`${baseStyles} ${variants[variant]} ${className}`}
+    >
+      {iconLeft && <span className="flex items-center">{iconLeft}</span>}
       {content}
-    </Link>
-  ) : (
-    <button className={`inline-block rounded-sm border px-12 py-3 text-sm font-medium focus:ring-3 focus:outline-hidden ${className ?? "border-indigo-600 bg-indigo-600 text-white hover:bg-transparent hover:text-indigo-600"}`} onClick={onClick} disabled={disabled}>
-      {content}
+      {iconRight && <span className="flex items-center">{iconRight}</span>}
     </button>
   );
 }
-

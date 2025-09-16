@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { BlogCard, ButtonComponent, CardComponent, SidebarComponent, BlogForm } from "../constants/path";
 import { useBlog } from "../context/blogContext";
+import { Plus } from "lucide-react";
 
 export default function HomePage() {
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -35,7 +36,11 @@ export default function HomePage() {
             <ButtonComponent
               content="Create Blog"
               onClick={() => setIsModalOpen(true)}
+              iconLeft={<Plus size={18} />}
+              className="bg-blue-600 text-white hover:bg-blue-700 hover:scale-105 transition-transform duration-200 rounded-xl shadow-md"
             />
+
+
           </div>
         </CardComponent>
 
@@ -48,7 +53,7 @@ export default function HomePage() {
           {loading ? (
             <p className="text-gray-500">Loading blogs...</p>
           ) : blogs.length > 0 ? (
-            <BlogCard  />
+            <BlogCard />
           ) : (
             <p className="text-gray-500">No blogs available yet.</p>
           )}

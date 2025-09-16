@@ -27,10 +27,13 @@
 
  type ButtonProps = {
   content: string;
+  onClick?: () => void;
+  type?: "button" | "submit" | "reset";
   className?: string;
-  link?: string;
-  onClick?:()=>void
-  disabled?:boolean
+  disabled?: boolean;
+  variant?: "primary" | "secondary" | "danger";
+  iconLeft?: React.ReactNode;
+  iconRight?: React.ReactNode;
 };
 
 type UserProps = {
