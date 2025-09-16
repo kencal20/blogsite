@@ -8,14 +8,15 @@ import {
   BlogForm,
   type componentProps,
 } from "../constants/path";
-import { Calendar, BookOpen, User, ArrowLeft, Heart, MessageCircle, Share2 } from "lucide-react";
+import { Calendar, BookOpen, User, ArrowLeft, Heart, MessageCircle, Share2, Edit, Trash } from "lucide-react";
 import { useBlog } from "../constants/path";
 import { useState } from "react";
 
 export default function BlogDetails() {
   const { id } = useParams<{ id: string }>();
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const { blogs, loading, updateBlog } = useBlog();
+  const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
+  const { blogs, loading, updateBlog, deleteBlog } = useBlog();
   const { user } = useAuth();
 
   const blog = blogs.find((b) => String(b.id) === id);
@@ -25,6 +26,12 @@ export default function BlogDetails() {
       updateBlog(blog.id, updatedBlog);
     }
     setIsModalOpen(false);
+  };
+
+  const handleDeleteBlog = () => {
+    if (blog && blog.id) {
+      deleteBlog(blog.id);
+    }
   };
 
   if (loading) {
@@ -54,7 +61,7 @@ export default function BlogDetails() {
       <div className="flex flex-col gap-6 w-full lg:w-3/4">
         {/* Back Link */}
         <Link to="/" className="flex items-center gap-2 text-gray-600 hover:text-black text-sm">
-          <ArrowLeft className="w-4 h-4" /> Back to Blog
+          <ArrowLeft className="w-4 h-4" /> Back to Blogs
         </Link>
 
         {/* Meta Top */}
@@ -96,8 +103,22 @@ export default function BlogDetails() {
           </span>
         </div>
 
+        {/* Author Actions */}
         {isAuthor && (
-          <ButtonComponent content="Edit Blog" onClick={() => setIsModalOpen(true)} />
+          <div className="flex gap-3">
+            <ButtonComponent
+              content="Edit Blog"
+              onClick={() => setIsModalOpen(true)}
+              variant="primary"
+              iconLeft={<Edit className="w-4 h-4" />}
+            />
+            <ButtonComponent
+              content="Delete Blog"
+              onClick={() => setShowDeleteConfirm(true)}
+              variant="danger"
+              iconLeft={<Trash className="w-4 h-4" />}
+            />
+          </div>
         )}
 
         {/* Cover Image */}
@@ -123,9 +144,6 @@ export default function BlogDetails() {
         {/* Content */}
         <CardComponent className="p-6">
           <p className="text-base text-gray-700 leading-relaxed">{blog.description}</p>
-          <p className="mt-4 text-base text-gray-700 leading-relaxed">
-            Lorem ipsum dolor sit amet, consectetur adipiscing elit...
-          </p>
         </CardComponent>
       </div>
 
@@ -148,6 +166,33 @@ export default function BlogDetails() {
         isEdit={true}
         blogId={blog.id}
       />
+
+      {/* Delete Confirmation Modal */}
+      {showDeleteConfirm && (
+        <div className="fixed inset-0 bg-black/40 flex items-center justify-center z-50">
+          <div className="bg-white rounded-xl p-6 shadow-lg max-w-sm w-full text-center">
+            <h2 className="text-lg font-semibold text-gray-900">Delete Blog?</h2>
+            <p className="text-gray-600 mt-2">
+              Are you sure you want to delete this blog? This action cannot be undone.
+            </p>
+            <div className="flex justify-center gap-4 mt-6">
+              <ButtonComponent
+                content="Cancel"
+                onClick={() => setShowDeleteConfirm(false)}
+                variant="secondary"
+              />
+              <ButtonComponent
+                content="Yes, Delete"
+                onClick={() => {
+                  handleDeleteBlog();
+                  setShowDeleteConfirm(false);
+                }}
+                variant="danger"
+              />
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
