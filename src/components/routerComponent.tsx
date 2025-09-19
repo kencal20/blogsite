@@ -1,5 +1,5 @@
 import { BrowserRouter, Route, Routes } from "react-router-dom";
-import { BlogDetails, HomePage, LoginPage, NavbarComponent, NotFoundPage, Register, useAuth } from "../constants/path";
+import { BlogDetails, HomePage, LoginPage, NavbarComponent, NotFoundPage, ProfilePage, Register, useAuth } from "../constants/path";
 
 export default function RouterComponent() {
     const { isAuthenticated } = useAuth()
@@ -7,7 +7,7 @@ export default function RouterComponent() {
         <BrowserRouter>
             <NavbarComponent />
             <Routes>
-                <Route path="/" element={<HomePage /> } />
+                <Route path="/" element={<HomePage />} />
                 <Route path="/blog/details/:id" element={<BlogDetails />} />
                 <Route
                     path="/login"
@@ -17,6 +17,12 @@ export default function RouterComponent() {
                     path="/register"
                     element={isAuthenticated ? <HomePage /> : <Register />}
                 />
+
+                <Route
+                    path="/profile"
+                    element={isAuthenticated ? <ProfilePage /> : <LoginPage />}
+                />
+                
                 <Route path="*" element={<NotFoundPage />} />
             </Routes>
 

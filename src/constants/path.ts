@@ -18,6 +18,8 @@ import ModalComponent from "../components/ui/modalComponent";
 import BlogForm from "../components/form/blogForm";
 import { BlogProvider,useBlog } from "../context/blogContext";
 import { getInitials } from "../utils/getInitials";
+import ProfilePage from "../Pages/profilePage";
+
 export {
     RouterComponent,
     NavbarComponent,
@@ -40,6 +42,7 @@ export {
     BlogForm,
     BlogProvider,
     useBlog,
-    getInitials
+    getInitials,
+    ProfilePage
 
 }
