@@ -19,6 +19,7 @@ import BlogForm from "../components/form/blogForm";
 import { BlogProvider,useBlog } from "../context/blogContext";
 import { getInitials } from "../utils/getInitials";
 import ProfilePage from "../Pages/profilePage";
+import FooterComponent from "../components/layout/footerComponent";
 
 export {
     RouterComponent,
@@ -43,6 +44,7 @@ export {
     BlogProvider,
     useBlog,
     getInitials,
-    ProfilePage
+    ProfilePage,
+    FooterComponent
 
 }
