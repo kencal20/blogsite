@@ -78,7 +78,7 @@ export default function NavbarComponent() {
                     </li>
                     <li>
                       <Link
-                        to="/dashboard"
+                        to="/"
                         className="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-700"
                         onClick={() => setDropdownOpen(false)}
                       >
