@@ -8,16 +8,6 @@ export default function NavbarComponent() {
   const [dropdownOpen, setDropdownOpen] = useState(false)
   const { isAuthenticated, user, logout } = useAuth()
 
-  const navLinks = [
-    { name: "About", href: "#" },
-    { name: "Careers", href: "#" },
-    { name: "History", href: "#" },
-    { name: "Services", href: "#" },
-    { name: "Projects", href: "#" },
-    { name: "Blog", href: "#" },
-  ]
-
-
   return (
     <header className="bg-white dark:bg-gray-900 shadow">
       <div className="mx-auto flex h-16 max-w-screen-xl items-center justify-between px-4 sm:px-6 lg:px-8">
@@ -28,22 +18,6 @@ export default function NavbarComponent() {
           </h1>
           <h1 className="font-bold text-xl text-gray-900 dark:text-white">BlogSite</h1>
         </div>
-
-        {/* Desktop Navigation */}
-        <nav aria-label="Global" className="hidden md:flex flex-1 justify-center">
-          <ul className="flex items-center gap-6 text-sm">
-            {navLinks.map((link) => (
-              <li key={link.name}>
-                <Link
-                  className="text-gray-700 hover:text-teal-600 dark:text-gray-300 dark:hover:text-teal-400 transition"
-                  to={link.href}
-                >
-                  {link.name}
-                </Link>
-              </li>
-            ))}
-          </ul>
-        </nav>
 
         {/* Desktop Buttons */}
         <div className="hidden md:flex items-center gap-4 relative">
@@ -74,15 +48,6 @@ export default function NavbarComponent() {
                         onClick={() => setDropdownOpen(false)}
                       >
                         Profile
-                      </Link>
-                    </li>
-                    <li>
-                      <Link
-                        to="/"
-                        className="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-700"
-                        onClick={() => setDropdownOpen(false)}
-                      >
-                        Dashboard
                       </Link>
                     </li>
                     <li>
@@ -129,19 +94,6 @@ export default function NavbarComponent() {
       {/* Mobile dropdown */}
       {menuOpen && (
         <div className="md:hidden px-4 pb-4 space-y-2 bg-white dark:bg-gray-900 shadow">
-          <ul className="space-y-2">
-            {navLinks.map((link) => (
-              <li key={link.name}>
-                <Link
-                  className="block py-2 text-gray-700 hover:text-teal-600 dark:text-gray-300 dark:hover:text-teal-400 transition"
-                  to={link.href}
-                >
-                  {link.name}
-                </Link>
-              </li>
-            ))}
-          </ul>
-
           <div className="flex flex-col gap-2 mt-4">
             {isAuthenticated ? (
               <>
@@ -161,12 +113,6 @@ export default function NavbarComponent() {
                   className="block rounded-md bg-gray-100 dark:bg-gray-800 px-4 py-2 text-sm text-gray-700 dark:text-gray-200 hover:bg-gray-200 dark:hover:bg-gray-700"
                 >
                   Profile
-                </Link>
-                <Link
-                  to="/dashboard"
-                  className="block rounded-md bg-gray-100 dark:bg-gray-800 px-4 py-2 text-sm text-gray-700 dark:text-gray-200 hover:bg-gray-200 dark:hover:bg-gray-700"
-                >
-                  Dashboard
                 </Link>
                 <button
                   onClick={logout}
