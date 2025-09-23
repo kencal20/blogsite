@@ -2,17 +2,20 @@ import { useAuth } from "../context/authContext";
 import { getInitials } from "../utils/getInitials";
 import { useBlog } from "../context/blogContext";
 import { CardComponent, TagComponent } from "../constants/path";
-import { BookOpen, Calendar, User, Mail,  } from "lucide-react";
-import { Link } from "react-router-dom";
+import { BookOpen, Calendar, User, Mail } from "lucide-react";
+import { Link, useNavigate } from "react-router-dom";
 
 export default function ProfilePage() {
   const { user } = useAuth();
   const { blogs } = useBlog();
+  const navigate = useNavigate();
 
   if (!user) {
     return (
       <div className="flex items-center justify-center min-h-screen bg-gray-100 dark:bg-gray-900">
-        <p className="text-gray-700 dark:text-gray-300">No user data available.</p>
+        <p className="text-gray-700 dark:text-gray-300">
+          No user data available.
+        </p>
       </div>
     );
   }
@@ -21,7 +24,7 @@ export default function ProfilePage() {
 
   return (
     <div className="flex flex-col items-center justify-start min-h-screen bg-gray-100 dark:bg-gray-900 px-4 py-10 space-y-10">
-      {/* Profile Card - Fully Revamped */}
+      {/* Profile Card */}
       <div className="w-full max-w-3xl bg-white dark:bg-gray-800 rounded-2xl shadow-xl p-8 border border-gray-200 dark:border-gray-700">
         <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-6">
           {/* Avatar + Name */}
@@ -36,13 +39,15 @@ export default function ProfilePage() {
               <p className="text-gray-600 dark:text-gray-400 flex items-center gap-2 mt-1">
                 <Mail size={16} /> {user.email}
               </p>
-           
             </div>
           </div>
 
           {/* Quick Actions */}
           <div className="flex gap-3">
-            <button className="px-4 py-2 text-sm font-medium rounded-xl bg-teal-600 text-white hover:bg-teal-700 transition">
+            <button
+              onClick={() => navigate("/update-user")}
+              className="px-4 py-2 text-sm font-medium rounded-xl bg-teal-600 text-white hover:bg-teal-700 transition"
+            >
               Edit Profile
             </button>
             <button className="px-4 py-2 text-sm font-medium rounded-xl bg-gray-200 text-gray-800 hover:bg-gray-300 dark:bg-gray-700 dark:text-gray-200 dark:hover:bg-gray-600 transition">
@@ -54,8 +59,9 @@ export default function ProfilePage() {
         {/* Extra Info / Bio Section */}
         <div className="mt-6 p-4 rounded-xl bg-gray-50 dark:bg-gray-700">
           <p className="text-gray-700 dark:text-gray-300 text-sm leading-relaxed">
-            Welcome back, <span className="font-semibold">{user.name.split(" ")[0]}</span>!  
-            Here you can manage your profile, check your blogs, and customize your account preferences.
+            Welcome back, <span className="font-semibold">{user.name.split(" ")[0]}</span>!
+            Here you can manage your profile, check your blogs, and customize
+            your account preferences.
           </p>
         </div>
       </div>

@@ -2,8 +2,8 @@ import { UserForm } from "../constants/path"
 
 type Props = {}
 
-export default function register({}: Props) {
+export default function UpdateUser({}: Props) {
   return (
-   <UserForm isEdit={false} />
+    <UserForm isEdit={true} />
   )
 }

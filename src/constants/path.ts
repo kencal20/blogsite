@@ -20,7 +20,7 @@ import { BlogProvider,useBlog } from "../context/blogContext";
 import { getInitials } from "../utils/getInitials";
 import ProfilePage from "../Pages/profilePage";
 import FooterComponent from "../components/layout/footerComponent";
-
+import UserForm from "../components/form/userForm";
 export {
     RouterComponent,
     NavbarComponent,
@@ -45,6 +45,7 @@ export {
     useBlog,
     getInitials,
     ProfilePage,
-    FooterComponent
+    FooterComponent,
+    UserForm
 
 }
